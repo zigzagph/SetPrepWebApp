@@ -6,13 +6,13 @@ var app = express();
 
 /* ----------------------------- CORS ----------------------------- */
 
-app.use(function(req, res, next) {
+/* app.use(function(req, res, next) {
     res.header('Access-Control-Allow-Origin', '*');
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 	next();
 });
 
-app.use(cors());
+app.use(cors()); */
 
 //---------------------------------------------------------------------------------//
 // The following section listens on port 3000 for http requests. These can be API
