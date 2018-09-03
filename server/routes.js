@@ -30,12 +30,11 @@ router.get('/', function(req, res, next) {
 
 // Returns all songs
 router.get('/songs', function(req, res, next) {
-    options.url = ptURL + '/api/songs?bandId=' + bandId + '&fields=Id,Name';
+    options.url = ptURL + '/api/songs?bandId=' + bandId + '&fields=Name,Cover';
     request(options, (err, response, html) => {
         if (err) {console.log(`Error : ${err}`); }
         if (html) { 
-            let data = JSON.parse(html);
-            return res.send(data.map(song => song.Name)); 
+            return res.send(html);
         }
         //if (response) { return res.send(response); }
     });
