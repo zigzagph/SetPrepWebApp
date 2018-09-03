@@ -4,10 +4,12 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { AppService } from './app.service';
+import { SongComponent } from './song/song.component';
 
 @NgModule({
     declarations: [
-        AppComponent
+        AppComponent,
+        SongComponent
     ],
     imports: [
         BrowserModule, HttpClientModule
