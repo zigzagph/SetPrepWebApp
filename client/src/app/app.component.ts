@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { AppService } from './app.service';
 
 import { Song } from './song';
-import { concatAll } from 'rxjs/operators';
+//import { concatAll } from 'rxjs/operators';
+//import { ThrowStmt } from '@angular/compiler';
+//import { SongComponent } from './song/song.component';
 
 @Component({
     selector: 'app-root',
@@ -13,6 +15,10 @@ export class AppComponent implements OnInit {
 
     songArray: Array<Song> = [];
     purgeSongs: Array<string> = ['1/30/97 Jam', '12345 678910 11 12', '[interview]'];
+
+    previousThreeArray: Array<Song> = [];
+    previousThreeActive = true;
+    previousThreeColor = 'red';
 
     constructor(private appService: AppService) {}
     
@@ -43,6 +49,8 @@ export class AppComponent implements OnInit {
                         let s = new Song();
                         s.name = song.Name;
                         s.cover = song.Cover;
+                        s.hidden = false;
+                        s.id = song.Id;
                         this.songArray.push(s);
                     }
                 });
@@ -75,7 +83,7 @@ export class AppComponent implements OnInit {
         ); */
     }
 
-    getPrevious(): void {
+    getPreviousShows(): void {
         this.appService.getPrevious().subscribe(
             showData => {
                 // for each show
@@ -84,18 +92,40 @@ export class AppComponent implements OnInit {
                     show.sets.forEach(set => {
                         // for each song
                         set.songs.forEach(song => {
-                            // for each song in song array
-                            this.songArray.forEach(sng => {
-                                // mark the song red in the song array
-                                if (sng.name === song.name) {
-                                    sng.color = 'red';
-                                }
-                            })
+                            let arr = this.songArray.filter(s => s.id === song.id);
+                            arr[0].color = this.previousThreeColor;
+                            this.previousThreeArray.push(arr[0]);
+
+                            /* console.log(this.previousThreeArray); */
                         });
                     });
                 });
             },
             error => { console.log(error); }
         );
+    }
+
+    colorEvent(color: any): void {
+        this.previousThreeColor = color;
+
+        this.previousThreeArray.forEach(song => {
+            song.color = color;
+        })
+    }
+
+    filterPreviousShows(): void {
+        console.log("filtering...");
+        //console.log(this.previousThreeArray);
+
+        if( this.previousThreeArray.length === 0 ){
+            this.previousThreeActive = !this.previousThreeActive;
+
+            this.previousThreeArray.forEach(song => {
+                //song.hidden = true;
+                if( song.color === this.previousThreeColor ){
+                    song.hidden = true;
+                }
+            })
+        }
     }
 }

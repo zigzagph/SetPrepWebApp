@@ -4,12 +4,21 @@
         <h2>Setlist Preparation Web Application</h2>
     </div>
 
-    <div class="row">
-        
-    </div>
+    <!-- <div class="row"></div> -->
 
     <div class="row">
-        <button type="button" (click)="getPrevious()">Get Previous</button>
+        <div class="input-group input-group-sm mb-3">
+            <div class="input-group-prepend">
+                <input style="width: 30px;" [colorPicker]="color" (colorPickerChange)="color=$event; colorEvent($event)" [style.background]="color"/>
+            </div>
+            <button class="btn btn-primary btn-sm" type="button" (click)="getPreviousShows()">Get Previous 3 Shows</button>
+            <div class="input-group-append">
+                <!-- <button class="btn btn-primary btn-sm" type="button" (click)="filterPreviousShows()">Filter</button> -->
+            </div>
+          </div>
+
+          <button class="btn btn-primary btn-sm active" type="button" (click)="filterPreviousShows()">Filter</button>
+
     </div>
 
     <div class="row justify-content-center">

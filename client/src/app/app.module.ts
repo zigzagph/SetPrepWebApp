@@ -6,13 +6,15 @@ import { AppComponent } from './app.component';
 import { AppService } from './app.service';
 import { SongComponent } from './song/song.component';
 
+import { ColorPickerModule } from 'narik-angular-color-picker';
+
 @NgModule({
     declarations: [
         AppComponent,
         SongComponent
     ],
     imports: [
-        BrowserModule, HttpClientModule
+        BrowserModule, HttpClientModule, ColorPickerModule
     ],
     providers: [AppService],
     bootstrap: [AppComponent]
