@@ -6,88 +6,69 @@
     <!-- Filters -->
     <div class="row">
         <div class="col">
-            <!-- <div class="card text-white bg-primary mb-3" (click)="test()" style="max-width: 20rem;">
-                <div class="card-header">Previous Shows Filter</div>
-                <div class="card-body">
-
-                        <fieldset>
-                            <div class="form-group">
-                                <select class="custom-select">
-                                <option selected="">Open this select menu</option>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
-                                </select>
-                            </div>
-                        </fieldset>
-                    
-                    
-                    <div class="input-group justify-content-center">
-                        <div class="input-group-prepend">
-                            <input style="width: 50px;" [colorPicker]="previousThreeColor" (colorPickerChange)="previousThreeColor=$event; setPreviousThreeColorEvent($event)" [style.background]="previousThreeColor"/>
-                        </div>
-                        <button class="btn btn-primary" type="button" (click)="getPreviousThreeShows()">Get Songs</button>
-                        <div class="input-group-append">
-                            <button class="btn btn-primary" type="button" data-toggle="button" (click)="filterPreviousShows()">Filter</button>
-                        </div>
-                    </div>
-                    <p class="card-text text-center my-3">Pick a color to identify the songs played in the previous 3 shows. Use the filter button to toggle the songs to and from the song list.</p>
-                </div>
-            </div> -->
-
-            <!-- <p> -->
-                <button class="btn btn-primary mb-2" type="button" data-toggle="collapse" data-target="#previousCollapse">Filter By Previous Shows</button>
-            <!-- </p> -->
+            <button class="btn btn-primary mb-2" type="button" data-toggle="collapse" data-target="#previousCollapse">Toggle Filter By Previous Shows</button>
             <div class="collapse" id="previousCollapse">
                 <div class="card card-body">
 
                     <p class="card-text text-center">Select how many previous shows you would like to filter through.</p>
-                    
-                    <div class="form-group">
-                        <select class="custom-select">
-                            <option value="1">One Show</option>
-                            <option value="2">Two Shows</option>
-                            <option selected="" value="3">Three Shows</option>
-                            <option value="4">Four Shows</option>
-                            <option value="5">Five Shows</option>
-                        </select>
-                    </div>
 
-                    <p class="card-text text-center">Select a color to indicate the previous files.</p>
-                    
-                    <div class="input-group justify-content-center">
-                        <div class="input-group-prepend">
-                            <input style="width: 50px;" [colorPicker]="previousThreeColor" (colorPickerChange)="previousThreeColor=$event; setPreviousThreeColorEvent($event)" [style.background]="previousThreeColor"/>
-                        </div>
-                        <button class="btn btn-primary" type="button" (click)="getPreviousThreeShows()">Get Songs</button>
-                        <div class="input-group-append">
-                            <button class="btn btn-primary" type="button" data-toggle="button" (click)="filterPreviousShows()">Toggle Filter</button>
-                        </div>
-                    </div>
+                    <select [(ngModel)]='previousShows' class='form-control mx-auto' style="width: 200px;">
+                        <option *ngFor="let s of showValues" [value]="s.Value">{{ s.Text }}</option>
+                    </select>
 
+                    <!-- <p class="card-text text-center mt-2">Select a color to indicate the songs.</p> -->
+
+                    <div class="btn-group mx-auto mt-3" role="group">
+                        <input style="width: 50px;" [colorPicker]="previousColor" (colorPickerChange)="previousColor=$event; setPreviousColorEvent($event)" [style.background]="previousColor"/>
+                        <button class="btn btn-primary" type="button" (click)="getPreviousShows()">Get Songs</button>
+                        <button class="btn btn-primary" type="button" (click)="filterOutSongs(previousArray)">
+                            <fa class="" size="1x" name="minus"></fa>
+                        </button>
+                        <button class="btn btn-primary" type="button" (click)="filterInSongs(previousArray)">
+                            <fa class="" size="1x" name="plus"></fa>
+                        </button>
+                        <button class="btn btn-primary" type="button" (click)="clearSongs(previousArray)">
+                            <fa class="" size="1x" name="times"></fa>
+                        </button>
+                    </div>
                 </div>
             </div>
-            
         </div>
 
         <div class="col">
-            <!-- <div class="card text-white bg-primary mb-3" style="max-width: 20rem;">
-                <div class="card-header">Get songs from the previous shows</div>
-                <div class="card-body">
-                    
-                    <div class="input-group justify-content-center">
-                        <div class="input-group-prepend">
-                            <input style="width: 50px;" [colorPicker]="previousThreeColor" (colorPickerChange)="previousThreeColor=$event; setPreviousThreeColorEvent($event)" [style.background]="previousThreeColor"/>
-                        </div>
-                        <button class="btn btn-primary" type="button" (click)="getPreviousThreeShows()">Get Songs</button>
-                        <div class="input-group-append">
-                            <button class="btn btn-primary" type="button" data-toggle="button" (click)="filterPreviousShows()">Filter</button>
-                        </div>
+                <button class="btn btn-primary mb-2" type="button" data-toggle="collapse" data-target="#previousCity">Toggle Filter By City</button>
+                <div class="collapse" id="previousCity">
+                    <div class="card card-body">
+    
+                        <p class="card-text text-center">Select the previous city you would like to filter through.</p>
+    
+                        <select [(ngModel)]='citySelect' class='form-control mx-auto' style="width: 250px;">
+                            <option *ngFor="let city of cityArray" [value]="city.Value">{{ city.Text }}</option>
+                        </select>
+
+                        <!-- need to fix the default value of the city selector. I think that it is loading after the render -->
+                        
+                        <!-- <select [(ngModel)]='cityShows' class='form-control mx-auto' style="width: 200px;">
+                            <option *ngFor="let s of showValues" [value]="s.Value">{{ s.Text }}</option>
+                        </select> -->
+    
+                        <!-- <p class="card-text text-center mt-2">Select a color to indicate the songs.</p> -->
+    
+                        <!-- <div class="btn-group mx-auto mt-3" role="group" aria-label="Basic example">
+                            <input style="width: 50px;" [colorPicker]="previousColor" (colorPickerChange)="previousColor=$event; setPreviousColorEvent($event)" [style.background]="previousColor"/>
+                            <button class="btn btn-primary" type="button" (click)="getPreviousShows()">Get Songs</button>
+                            <button class="btn btn-primary" type="button" (click)="filterOutSongs(previousArray)">
+                                <fa class="" size="1x" name="minus"></fa>
+                            </button>
+                            <button class="btn btn-primary" type="button" (click)="filterInSongs(previousArray)">
+                                <fa class="" size="1x" name="plus"></fa>
+                            </button>
+                            <button class="btn btn-primary" type="button" (click)="clearPreviousShows()">
+                                <fa class="" size="1x" name="times"></fa>
+                            </button>
+                        </div> -->
                     </div>
-                    
-                    <p class="card-text text-center my-3">Pick a color to identify the songs played in the previous 3 shows from the selected city. Use the filter button to toggle the songs to and from the song list.</p>
                 </div>
-            </div> -->
         </div>
 
         <div class="col"></div>

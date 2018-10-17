@@ -3,6 +3,10 @@ import { AppService } from './app.service';
 
 import { Song } from './song';
 
+class ShowValue {
+    constructor(public Text: string, public Value: string) { }
+}
+
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
@@ -10,25 +14,35 @@ import { Song } from './song';
 })
 export class AppComponent implements OnInit {
 
-    songArray: Array<Song> = [];
-    coversArray: Array<Song> = [];
+    showValues: ShowValue[] = [
+        new ShowValue("One Show", "1"),
+        new ShowValue("Two Shows", "2"),
+        new ShowValue("Three Shows", "3"),
+        new ShowValue("Four Shows", "4"),
+        new ShowValue("Five Shows", "5")
+    ]
+
+    songArray: Song[] = [];
+    coversArray: Song[] = []; // references the songArray
     totalCovers = 0;
-    purgeSongs: Array<string> = ['1/30/97 Jam', '12345 678910 11 12', '[interview]', 'Unknown', 'Costume Contest Jam', 'Countdown Medley', 'Disco Bisquick', 'Flip-Flop', 'Fuck That Doll', 'Giveaway', 'Hibbage', 'Ida Fith', 'Jam', 'Jam On The River Song', 'Killing Eleven', 'Koyaanisqatsi Jam', 'Latin Pussy', 'Leora', 'Loch Ness Monster', 'Macina Verde', 'Manic Depression', 'Mariel Bop Bop', 'Marvelous', 'new song', 'Ohayou Gozaimasu', 'Onery Funk', 'Paul Revere', 'Road Song', 'Salute To Sammy', 'Smash', 'Smell The Funk', 'South Of The Border Pussy', 'Sprawl', 'Sugarcane', 'Termites', 'The Great Pumpkin Jam', 'The Truth', 'Tony\'s Birthday Jam', 'Ulua', 'Waltz In Black', 'What A Show', 'Worcester Jam'];
+    purgeSongs: string[] = ['1/30/97 Jam', '12345 678910 11 12', '[interview]', 'Unknown', 'Costume Contest Jam', 'Countdown Medley', 'Disco Bisquick', 'Flip-Flop', 'Fuck That Doll', 'Giveaway', 'Hibbage', 'Ida Fith', 'Jam On The River Song', 'Killing Eleven', 'Koyaanisqatsi Jam', 'Latin Pussy', 'Leora', 'Loch Ness Monster', 'Macina Verde', 'Manic Depression', 'Mariel Bop Bop', 'Marvelous', 'new song', 'Ohayou Gozaimasu', 'Onery Funk', 'Paul Revere', 'Road Song', 'Salute To Sammy', 'Smash', 'Smell The Funk', 'South Of The Border Pussy', 'Sprawl', 'Sugarcane', 'Termites', 'The Great Pumpkin Jam', 'The Truth', 'Tony\'s Birthday Jam', 'Ulua', 'Waltz In Black', 'What A Show', 'Worcester Jam'];
 
-    previousThreeArray: Array<Song> = [];
-    previousThreeColor = '#f10f0f';
+    previousArray: Song[] = []; // references to the songArray
+    previousColor = '#f10f0f';
+    previousShows = '3';
 
-    checkModel: any = { left: false, middle: true, right: false };
+    cityArray: ShowValue[] = [];
+    cityColor = '#f10f0f';
+    citySelect: '0';
+    //cityShows = '3';
 
     constructor(private appService: AppService) {}
     
     ngOnInit(): void {
-
-
         // get all of the bands songs
         this.appService.getSongs().subscribe(
             showData => { 
-                console.log("Count : " + showData.length);
+                //console.log("Count : " + showData.length);
                 //console.log(this.color);
                 // Alphabetiallby sort the string array
                 showData.sort(function(a, b){
@@ -72,69 +86,124 @@ export class AppComponent implements OnInit {
                 console.log("Error");
                 console.log(error); 
             }
-        );
+        ); */
 
-        this.appService.getLocales().subscribe(
+        this.appService.getAllLocales().subscribe(
             data => { 
-                console.log("GL Return");
-                console.log(data);
-                //console.log(typeof data) 
+                //console.log(data);
+                for( let x = 0; x < data.length; x++ ) {
+                    this.cityArray.push( new ShowValue(data[x], x.toString()));
+                }
+                //console.log(this.cityArray);
             },
             error => { 
                 console.log("Error");
                 console.log(error); 
             }
-        ); */
+        );
     }
 
     test(): void {
         console.log("test");
     }
 
-    getPreviousThreeShows(): void {
-        this.appService.getPrevious().subscribe(
+    getPreviousShows(): void {
+        // reset the current 
+        this.clearSongs(this.previousArray)
+        
+        // make the api call to get the previous show data
+        this.appService.getPrevious(this.previousShows).subscribe(
             showData => {
                 // temp array
                 let sArray = [];
                 
                 // for each show
                 showData.forEach(show => {
-                    // for each set
-                    show.sets.forEach(set => {
-                        // for each song
-                        set.songs.forEach(song => {
-                            let arr = this.songArray.filter(s => s.id === song.id);
-                            arr[0].color = this.previousThreeColor;
-                            sArray.push(arr[0]);
+                    //console.log("Show : " + show.name);
+                    if( show.sets.length > 0 ){
+                        // for each set
+                        show.sets.forEach(set => {
+                            // for each song
+                            set.songs.forEach(song => {
+                                // skip the song if it is in the purge array
+                                if( this.purgeSongs.indexOf(song.name) ) {
+                                    let arr = this.songArray.filter(s => s.id === song.id);
+                                    arr[0].color = this.previousColor;
+                                    sArray.push(arr[0]);
+                                }
+                            });
                         });
-                    });
+                    } else {
+                        console.log("No setlist for show " + show.name);
+                    }
                 });
 
                 // filter out the duplicates
-                this.previousThreeArray = sArray.filter(function(item, pos) {
+                this.previousArray = sArray.filter((item, pos) => {
                     return sArray.indexOf(item) == pos;
                 })
-
             },
             error => { console.log(error); }
         );
     }
 
-    setPreviousThreeColorEvent(color: any): void {
-        this.previousThreeColor = color;
+    setPreviousColorEvent(color: any): void {
+        this.previousColor = color;
 
-        this.previousThreeArray.forEach(song => {
-            song.color = this.previousThreeColor;
+        this.previousArray.forEach(song => {
+            song.color = this.previousColor;
         })
     }
 
-    filterPreviousShows(): void {
+    /* filterPreviousShows(): void {
         //console.log("filtering...");
 
-        if( this.previousThreeArray.length > 0 ){
+        if( this.previousThreeArray.length ){
             this.previousThreeArray.forEach(song => {
-                song.hidden = !song.hidden;
+                //song.hidden = !song.hidden;
+                song.hidden = true;
             })
+        }
+    } */
+
+    /* clearPreviousShows(): void {
+        // reset the current 
+        if( this.previousThreeArray ) {
+            this.previousThreeArray.forEach(song => {
+                song.color = "white";
+                song.hidden = false;
+            });
+
+            this.previousThreeArray = [];
+        }
+    } */
+
+    filterOutSongs(songs: Song[]): void {
+        //console.log("filtering...");
+        if( songs.length ){
+            songs.forEach(song => {
+                song.hidden = true;
+            })
+        }
+    }
+
+    filterInSongs(songs: Song[]): void {
+        if( songs.length ){
+            songs.forEach(song => {
+                song.hidden = false;
+            })
+        }
+    }
+
+    clearSongs(songs: Song[]): void {
+        // reset the current 
+        if( songs ) {
+            songs.forEach(song => {
+                song.color = "white";
+                song.hidden = false;
+            });
+
+            songs = [];
         }
     }
 

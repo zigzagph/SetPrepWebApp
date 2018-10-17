@@ -28,11 +28,17 @@ export class AppService {
         return this.http.get(this.url + '/venues');
     }
 
-    public getLocales(): Observable<any> {
+    public getAllLocales(): Observable<any> {
         return this.http.get(this.url + '/locales');
     }
 
-    public getPrevious(): Observable<any> {
-        return this.http.get(this.url + '/previous');
+    public getPrevious(shows: string): Observable<any> {
+        const httpOptions = {
+            headers: new HttpHeaders()
+                        .append('Content-Type', 'application/json, text/plain'),
+            params: new HttpParams()
+                        .append('shows', shows)
+        };
+        return this.http.get(this.url + '/previous', httpOptions);
     }
 }

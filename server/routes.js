@@ -68,7 +68,7 @@ router.get('/locales', function(req, res, next) {
 
 // Returns the previous 3 shows
 router.get('/previous', function(req, res, next) {
-    options.url = ptURL + '/api/bands/' + bandId + '/setlists/paged?page=1&pageSize=3&timespan=past';
+    options.url = ptURL + '/api/bands/' + bandId + '/setlists/paged?page=1&pageSize=' + req.query.shows + '&timespan=past';
     request(options, (err, response, html) => {
         if (err) {console.log(`Error : ${err}`); }
         if (html) { 
