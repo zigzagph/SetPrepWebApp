@@ -1,11 +1,86 @@
 <div class="container">
+    
     <div class="row my-3">
-        <h2>Setlist Filtering Application</h2>
+        <div class="col-4 h2">Setlist Filtering Application</div>
+        <div class="col-8">
+            <div class="row">
+                <div class="col-6">
+                    <button class="btn btn-primary mb-2" type="button" data-toggle="collapse" data-target="#previousCollapse">Toggle Filter By Previous Shows</button>
+                    <div class="collapse" id="previousCollapse">
+                        <div class="card card-body">
+        
+                            <p class="card-text text-center">Select how many previous shows you would like to filter through.</p>
+        
+                            <select [(ngModel)]='previousShows' class='form-control mx-auto' style="width: 200px;">
+                                <option *ngFor="let s of showValues" [value]="s.Value">{{ s.Text }}</option>
+                            </select>
+        
+                            <!-- <p class="card-text text-center mt-2">Select a color to indicate the songs.</p> -->
+        
+                            <div class="btn-group mx-auto mt-3" role="group">
+                                <input style="width: 50px;" [colorPicker]="previousColor" (colorPickerChange)="previousColor=$event; setPreviousColorEvent($event)" [style.background]="previousColor"/>
+                                <button class="btn btn-primary" type="button" (click)="getPreviousShows()">Get Songs</button>
+                                <button class="btn btn-primary" type="button" (click)="filterOutSongs(previousArray)">
+                                    <fa class="" size="1x" name="minus"></fa>
+                                </button>
+                                <button class="btn btn-primary" type="button" (click)="filterInSongs(previousArray)">
+                                    <fa class="" size="1x" name="plus"></fa>
+                                </button>
+                                <button class="btn btn-primary" type="button" (click)="clearSongs(previousArray)">
+                                    <fa class="" size="1x" name="times"></fa>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    
+                <div class="col-6">
+                    <button class="btn btn-primary mb-2" type="button" data-toggle="collapse" data-target="#previousCity">Toggle Filter By City</button>
+                    <div class="collapse" id="previousCity">
+                        <div class="card card-body">
+        
+                            <p class="card-text text-center">Select the previous city you would like to filter through.</p>
+        
+                            <select [(ngModel)]='citySelect' class='form-control mx-auto' style="width: 250px;">
+                                <option *ngFor="let city of cityArray" [value]="city.Value">{{ city.Text }}</option>
+                            </select>
+                            
+                            <p class="card-text text-center m-2">Select how many previous shows you would like to get.</p>
+        
+                            <select [(ngModel)]='cityShows' class='form-control mx-auto' style="width: 200px;">
+                                <option *ngFor="let s of showValues" [value]="s.Value">{{ s.Text }}</option>
+                            </select>
+        
+                            <!-- <p class="card-text text-center m-2">Select a color to indicate the songs.</p> -->
+        
+                            <div class="btn-group mx-auto mt-3" role="group">
+                                <input style="width: 50px;" [colorPicker]="cityColor" (colorPickerChange)="cityColor=$event; setCityColorEvent($event)" [style.background]="cityColor"/>
+                                <button class="btn btn-primary" type="button" (click)="getLocaleShows()">Get Songs</button>
+                                <button class="btn btn-primary" type="button" (click)="filterOutSongs(citySongArray)">
+                                    <fa class="" size="1x" name="minus"></fa>
+                                </button>
+                                <button class="btn btn-primary" type="button" (click)="filterInSongs(citySongArray)">
+                                    <fa class="" size="1x" name="plus"></fa>
+                                </button>
+                                <button class="btn btn-primary" type="button" (click)="clearSongs(citySongArray)">
+                                    <fa class="" size="1x" name="times"></fa>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- <div class="col-1">
+                    <button class="btn btn-primary" type="button" data-toggle="button" (click)="filterCovers()">Filter Covers</button>
+                </div> -->
+
+            </div>
+        </div>
     </div>
 
     <!-- Filters -->
     <div class="row">
-        <div class="col">
+        <!-- <div class="col">
             <button class="btn btn-primary mb-2" type="button" data-toggle="collapse" data-target="#previousCollapse">Toggle Filter By Previous Shows</button>
             <div class="collapse" id="previousCollapse">
                 <div class="card card-body">
@@ -16,7 +91,7 @@
                         <option *ngFor="let s of showValues" [value]="s.Value">{{ s.Text }}</option>
                     </select>
 
-                    <!-- <p class="card-text text-center mt-2">Select a color to indicate the songs.</p> -->
+                    <p class="card-text text-center mt-2">Select a color to indicate the songs.</p>
 
                     <div class="btn-group mx-auto mt-3" role="group">
                         <input style="width: 50px;" [colorPicker]="previousColor" (colorPickerChange)="previousColor=$event; setPreviousColorEvent($event)" [style.background]="previousColor"/>
@@ -33,60 +108,63 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
 
-        <div class="col">
-                <button class="btn btn-primary mb-2" type="button" data-toggle="collapse" data-target="#previousCity">Toggle Filter By City</button>
-                <div class="collapse" id="previousCity">
-                    <div class="card card-body">
-    
-                        <p class="card-text text-center">Select the previous city you would like to filter through.</p>
-    
-                        <select [(ngModel)]='citySelect' class='form-control mx-auto' style="width: 250px;">
-                            <option *ngFor="let city of cityArray" [value]="city.Value">{{ city.Text }}</option>
-                        </select>
+        <!-- <div class="col">
+            <button class="btn btn-primary mb-2" type="button" data-toggle="collapse" data-target="#previousCity">Toggle Filter By City</button>
+            <div class="collapse" id="previousCity">
+                <div class="card card-body">
 
-                        <!-- need to fix the default value of the city selector. I think that it is loading after the render -->
-                        
-                        <!-- <select [(ngModel)]='cityShows' class='form-control mx-auto' style="width: 200px;">
-                            <option *ngFor="let s of showValues" [value]="s.Value">{{ s.Text }}</option>
-                        </select> -->
-    
-                        <!-- <p class="card-text text-center mt-2">Select a color to indicate the songs.</p> -->
-    
-                        <!-- <div class="btn-group mx-auto mt-3" role="group" aria-label="Basic example">
-                            <input style="width: 50px;" [colorPicker]="previousColor" (colorPickerChange)="previousColor=$event; setPreviousColorEvent($event)" [style.background]="previousColor"/>
-                            <button class="btn btn-primary" type="button" (click)="getPreviousShows()">Get Songs</button>
-                            <button class="btn btn-primary" type="button" (click)="filterOutSongs(previousArray)">
-                                <fa class="" size="1x" name="minus"></fa>
-                            </button>
-                            <button class="btn btn-primary" type="button" (click)="filterInSongs(previousArray)">
-                                <fa class="" size="1x" name="plus"></fa>
-                            </button>
-                            <button class="btn btn-primary" type="button" (click)="clearPreviousShows()">
-                                <fa class="" size="1x" name="times"></fa>
-                            </button>
-                        </div> -->
+                    <p class="card-text text-center">Select the previous city you would like to filter through.</p>
+
+                    <select [(ngModel)]='citySelect' class='form-control mx-auto' style="width: 250px;">
+                        <option *ngFor="let city of cityArray" [value]="city.Value">{{ city.Text }}</option>
+                    </select>
+                    
+                    <p class="card-text text-center m-2">Select how many previous shows you would like to get.</p>
+
+                    <select [(ngModel)]='cityShows' class='form-control mx-auto' style="width: 200px;">
+                        <option *ngFor="let s of showValues" [value]="s.Value">{{ s.Text }}</option>
+                    </select>
+
+                    <p class="card-text text-center m-2">Select a color to indicate the songs.</p>
+
+                    <div class="btn-group mx-auto mt-3" role="group">
+                        <input style="width: 50px;" [colorPicker]="cityColor" (colorPickerChange)="cityColor=$event; setCityColorEvent($event)" [style.background]="cityColor"/>
+                        <button class="btn btn-primary" type="button" (click)="getLocaleShows()">Get Songs</button>
+                        <button class="btn btn-primary" type="button" (click)="filterOutSongs(citySongArray)">
+                            <fa class="" size="1x" name="minus"></fa>
+                        </button>
+                        <button class="btn btn-primary" type="button" (click)="filterInSongs(citySongArray)">
+                            <fa class="" size="1x" name="plus"></fa>
+                        </button>
+                        <button class="btn btn-primary" type="button" (click)="clearSongs(citySongArray)">
+                            <fa class="" size="1x" name="times"></fa>
+                        </button>
                     </div>
                 </div>
-        </div>
-
-        <div class="col"></div>
-    </div>
-
-    <!-- Stats -->
-    <div class="row my-3">
-        <div class="col">
-            <div class="h5">Total Songs: {{ songArray.length }} 
-                <span class="h6">(Originals: {{ songArray.length - coversArray.length }}, Covers: {{ coversArray.length }})</span>
             </div>
-            <button class="btn btn-primary" type="button" data-toggle="button" (click)="filterCovers()">Filter Covers</button>
-        </div>
+        </div> -->
+
+        <!-- <div class="col"></div> -->
     </div>
 
     <!-- Song List -->
-    <div *ngIf="songArray.length > 0" class="row my-3">
-        <div class="h3">Song List</div>
+    <div *ngIf="songArray.length > 0" class="row my-3">        
+        <div class="col-5">
+            <div class="h3">Song List</div>
+        </div>
+        
+        <div class="col-5">
+            <div class="h5 pt-2 text-right">Total Songs: {{ songArray.length }} 
+                <span class="h6">(Originals: {{ songArray.length - coversArray.length }}, Covers: {{ coversArray.length }})</span>
+            </div>
+        </div>
+        
+        <div class="col-2">
+            <div class="h5 pt-2 text-right">Total Cities: {{ cityArray.length }}</div>
+        </div>
+
         <div class="jumbotron p-2">
             <div class="row justify-content-center">
                 <app-song *ngFor="let song of songArray" [song]="song"></app-song>
