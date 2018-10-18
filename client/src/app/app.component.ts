@@ -32,9 +32,10 @@ export class AppComponent implements OnInit {
     previousShows = '3';
 
     cityArray: ShowValue[] = [];
-    cityColor = '#f10f0f';
-    citySelect: '0';
-    //cityShows = '3';
+    citySongArray: Song[] = [];
+    cityColor = '#0917f3';
+    citySelect:string;
+    cityShows = '3';
 
     constructor(private appService: AppService) {}
     
@@ -90,11 +91,10 @@ export class AppComponent implements OnInit {
 
         this.appService.getAllLocales().subscribe(
             data => { 
-                //console.log(data);
                 for( let x = 0; x < data.length; x++ ) {
                     this.cityArray.push( new ShowValue(data[x], x.toString()));
                 }
-                //console.log(this.cityArray);
+                this.citySelect = '0';
             },
             error => { 
                 console.log("Error");
@@ -107,6 +107,34 @@ export class AppComponent implements OnInit {
         console.log("test");
     }
 
+    filterShowData(showData: any[], color: string): Song[] {
+        // temp array
+        let sArray = [];
+                
+        // for each show
+        showData.forEach(show => {
+            //console.log("Show : " + show.name);
+            if( show.sets.length > 0 ){
+                // for each set
+                show.sets.forEach(set => {
+                    // for each song
+                    set.songs.forEach(song => {
+                        // skip the song if it is in the purge array
+                        if( this.purgeSongs.indexOf(song.name) ) {
+                            let arr = this.songArray.filter(s => s.id === song.id);
+                            arr[0].color = color;
+                            sArray.push(arr[0]);
+                        }
+                    });
+                });
+            } else {
+                console.log("No setlist for show " + show.name);
+            }
+        });
+
+        return sArray;
+    }
+
     getPreviousShows(): void {
         // reset the current 
         this.clearSongs(this.previousArray)
@@ -114,29 +142,8 @@ export class AppComponent implements OnInit {
         // make the api call to get the previous show data
         this.appService.getPrevious(this.previousShows).subscribe(
             showData => {
-                // temp array
-                let sArray = [];
-                
-                // for each show
-                showData.forEach(show => {
-                    //console.log("Show : " + show.name);
-                    if( show.sets.length > 0 ){
-                        // for each set
-                        show.sets.forEach(set => {
-                            // for each song
-                            set.songs.forEach(song => {
-                                // skip the song if it is in the purge array
-                                if( this.purgeSongs.indexOf(song.name) ) {
-                                    let arr = this.songArray.filter(s => s.id === song.id);
-                                    arr[0].color = this.previousColor;
-                                    sArray.push(arr[0]);
-                                }
-                            });
-                        });
-                    } else {
-                        console.log("No setlist for show " + show.name);
-                    }
-                });
+                // create a song array of the filtered show data
+                let sArray = this.filterShowData(showData, this.previousColor);
 
                 // filter out the duplicates
                 this.previousArray = sArray.filter((item, pos) => {
@@ -152,6 +159,31 @@ export class AppComponent implements OnInit {
 
         this.previousArray.forEach(song => {
             song.color = this.previousColor;
+        })
+    }
+
+    getLocaleShows(): void {
+        //console.log(this.cityArray[this.citySelect].Text)
+
+        this.appService.getLocale(this.cityArray[this.citySelect].Text, this.cityShows).subscribe(
+            showData => {
+                // create a song array of the filtered show data
+                let sArray = this.filterShowData(showData, this.cityColor);
+
+                // filter out the duplicates
+                this.citySongArray = sArray.filter((item, pos) => {
+                    return sArray.indexOf(item) == pos;
+                })
+            },
+            error => { console.log(error); }
+        );
+    }
+
+    setCityColorEvent(color: any): void {
+        this.cityColor = color;
+
+        this.citySongArray.forEach(song => {
+            song.color = this.cityColor;
         })
     }
 
