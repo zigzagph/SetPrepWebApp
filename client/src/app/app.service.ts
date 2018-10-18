@@ -32,6 +32,17 @@ export class AppService {
         return this.http.get(this.url + '/locales');
     }
 
+    public getLocale(locale: string, shows: string): Observable<any> {
+        const httpOptions = {
+            headers: new HttpHeaders()
+                        .append('Content-Type', 'application/json, text/plain'),
+            params: new HttpParams()
+                        .append('locale', locale)
+                        .append('shows', shows)
+        };
+        return this.http.get(this.url + '/locale', httpOptions);
+    }
+
     public getPrevious(shows: string): Observable<any> {
         const httpOptions = {
             headers: new HttpHeaders()
